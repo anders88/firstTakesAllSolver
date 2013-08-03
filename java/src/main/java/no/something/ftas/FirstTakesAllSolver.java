@@ -1,10 +1,19 @@
 package no.something.ftas;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 public class FirstTakesAllSolver {
 	private static final String BASE_URL="http://localhost:8081/";
@@ -16,12 +25,29 @@ public class FirstTakesAllSolver {
 		new FirstTakesAllSolver().sendAnswer(questionId,answer);
 	}
 
-	private void sendAnswer(String questionId, String answer) throws HttpException, IOException {
-		HttpClient client = new HttpClient();
-		PostMethod postMethod = new PostMethod(BASE_URL + "game/");
-		postMethod.setParameter("gamerId", "verdi");
+	private String sendAnswer(String questionId, String answer) throws ClientProtocolException, IOException {
+		DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(BASE_URL + "game/"); 
+
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("gamerId", PLAYER_ID));
+		params.add(new BasicNameValuePair("questionId", questionId));
+		params.add(new BasicNameValuePair("answer", answer));
+		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(params, "UTF-8");
+		httpPost.setEntity(entity);
 		
-		int result = client.executeMethod(postMethod);
+		HttpResponse result = defaultHttpClient.execute(httpPost);
+		
+		InputStream content = result.getEntity().getContent();
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(content));
+		
+		StringBuilder res=new StringBuilder();
+		while(bufferedReader.ready()) {
+			res.append(bufferedReader.readLine());
+		}
+		
+		System.out.println(res);
+		return res.toString();
 		
 		
 	}
