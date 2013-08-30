@@ -7,11 +7,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -20,10 +23,30 @@ public class FirstTakesAllSolver {
 	private static final String PLAYER_ID="1";
 
 	public static void main(String[] args) throws Exception {
-		String questionId = "2000001";
-		String answer = "024ff09e-0271-4a8b-aeb4-f4cdb8890413";
-		new FirstTakesAllSolver().sendAnswer(questionId,answer);
+		//String questionId = "2000001";
+		//String answer = "024ff09e-0271-4a8b-aeb4-f4cdb8890413";
+		//new FirstTakesAllSolver().sendAnswer(questionId,answer);
+        new FirstTakesAllSolver().testNew();
 	}
+
+    private void testNew() {
+        HttpClient httpClient = new DefaultHttpClient();
+
+        try {
+            HttpPost request = new HttpPost(BASE_URL + "game/something");
+            StringEntity params =new StringEntity("details={\"name\":\"myname\",\"age\":\"20\"} ");
+
+            request.setEntity(params);
+
+            httpClient.execute(request);
+
+            // handle response here...
+        }catch (Exception ex) {
+            // handle exception here
+        } finally {
+            httpClient.getConnectionManager().shutdown();
+        }
+    }
 
 	private String sendAnswer(String questionId, String answer) throws ClientProtocolException, IOException {
 		DefaultHttpClient defaultHttpClient = new DefaultHttpClient();

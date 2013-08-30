@@ -2,3 +2,5 @@
 .project
 .settings/
 target/
+.idea/
+first-takes-all-solver.iml
