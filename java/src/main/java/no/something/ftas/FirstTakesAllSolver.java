@@ -1,12 +1,13 @@
 package no.something.ftas;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -26,10 +27,37 @@ public class FirstTakesAllSolver {
 		//String questionId = "2000001";
 		//String answer = "024ff09e-0271-4a8b-aeb4-f4cdb8890413";
 		//new FirstTakesAllSolver().sendAnswer(questionId,answer);
-        new FirstTakesAllSolver().testNew();
-	}
+        //new FirstTakesAllSolver().testNew();
+        List<String> questions = new FirstTakesAllSolver().readQuestions("Echo");
+        System.out.println(questions);
+        System.out.println(questions.size());
 
-    private void testNew() {
+    }
+
+    private List<String> readQuestions(String categoryid) throws  Exception {
+        String jsonQuestions =  readUrl(new URL(BASE_URL + "game?playerid=" + PLAYER_ID + "&category=" + categoryid));
+        Gson gson = new Gson();
+        List<String> answers = gson.fromJson(jsonQuestions, new TypeToken<List<String>>() {}.getType());
+
+        return answers;
+    }
+
+    private String readUrl(URL url) throws IOException {
+        URLConnection conn = url.openConnection();
+        Reader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+        try {
+            StringBuilder result = new StringBuilder();
+            int c;
+            while ((c = reader.read()) != -1) {
+                result.append((char)c);
+            }
+            return result.toString();
+        } finally {
+            reader.close();
+        }
+    }
+
+    private String postJson(String url,String json) {
         HttpClient httpClient = new DefaultHttpClient();
 
         try {
@@ -40,6 +68,7 @@ public class FirstTakesAllSolver {
 
             httpClient.execute(request);
 
+            return null;
             // handle response here...
         }catch (Exception ex) {
             // handle exception here
