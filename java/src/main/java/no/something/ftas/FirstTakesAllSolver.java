@@ -2,16 +2,8 @@ package no.something.ftas;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -53,7 +45,12 @@ public class FirstTakesAllSolver {
 
     private String readUrl(URL url) throws IOException {
         URLConnection conn = url.openConnection();
-        Reader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+        InputStream inputStream = conn.getInputStream();
+        return readFromStream(inputStream);
+    }
+
+    private String readFromStream(InputStream inputStream) throws IOException {
+        Reader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
         try {
             StringBuilder result = new StringBuilder();
             int c;
@@ -66,35 +63,22 @@ public class FirstTakesAllSolver {
         }
     }
 
+    private String postJson(String urlstr,String json) throws Exception {
+        URL url = new URL(urlstr);
+        URLConnection conn = url.openConnection();
 
+        conn.setDoOutput(true);
+        PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(),"utf-8"));
 
-    private String postJson(String url,String json) throws Exception {
-        HttpClient httpClient = new DefaultHttpClient();
+        printWriter.append(json);
+        printWriter.close();
 
-        try {
-            HttpPost request = new HttpPost(url);
-            StringEntity params =new StringEntity(json);
+        String res = readFromStream(conn.getInputStream());
 
-            request.setEntity(params);
+        return res;
 
-            HttpResponse response = httpClient.execute(request);
-
-            BufferedReader rd = new BufferedReader
-                    (new InputStreamReader(response.getEntity().getContent()));
-            try {
-                String line;
-                StringBuilder textResponse = new StringBuilder();
-                while ((line = rd.readLine()) != null) {
-                    textResponse.append(line);
-                }
-                return textResponse.toString();
-            } finally {
-                rd.close();
-            }
-        } finally {
-            httpClient.getConnectionManager().shutdown();
-        }
     }
+
 
     private String postAnswer(List<String> answers) throws Exception {
         PlayerAnswerDto playerAnswerDto = new PlayerAnswerDto(PLAYER_ID, answers);
