@@ -1,13 +1,11 @@
 # ftasolver
 
-A Clojure library designed to ... well, that part is up to you.
-
+Start point for First Takes All using Clojure
 ## Usage
 
-FIXME
+1. Update core.clj with your player id and server address
+2. Lein run
 
 ## License
-
-Copyright © 2013 FIXME
 
 Distributed under the Eclipse Public License, the same as Clojure.
