@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FirstTakesAllSolver {
@@ -18,18 +19,29 @@ public class FirstTakesAllSolver {
 	private static final String PLAYER_ID="0239042";
 
 	public static void main(String[] args) throws Exception {
-        String questionUrl = FirstTakesAllSolver.BASE_URL +
-                "game?playerid=" + FirstTakesAllSolver.PLAYER_ID +
-                "&category=Echo";
-        System.out.println("Reading URL " + questionUrl);
-        JSONArray question = new JSONArray(readUrl(new URL(questionUrl)));
-        System.out.println(question);
+        String category = "Echo";
+        JSONArray question = readQuestions(category);
+        JSONArray answerToQuestions  = calculateAnswer(question);
         JSONObject answer = new JSONObject();
         answer.put("playerId", PLAYER_ID);
-        answer.put("answers", question);
+        answer.put("answers", answerToQuestions);
         System.out.println(answer);
         String res = httpPost(FirstTakesAllSolver.BASE_URL + "game", answer.toString());
         System.out.println(res);
+    }
+
+    private static JSONArray calculateAnswer(JSONArray question) {
+        return question;
+    }
+
+    private static JSONArray readQuestions(String category) throws JSONException, IOException {
+        String questionUrl = FirstTakesAllSolver.BASE_URL +
+                "game?playerid=" + FirstTakesAllSolver.PLAYER_ID +
+                "&category=" +category;
+        System.out.println("Reading URL " + questionUrl);
+        JSONArray question = new JSONArray(readUrl(new URL(questionUrl)));
+        System.out.println(question);
+        return question;
     }
 
     private static String readUrl(URL url) throws IOException {
