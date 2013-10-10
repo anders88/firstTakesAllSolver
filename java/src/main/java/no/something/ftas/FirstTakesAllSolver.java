@@ -9,29 +9,38 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FirstTakesAllSolver {
-	private static final String BASE_URL="http://www.anderssandbox.com:8080/fta/";
-	private static final String PLAYER_ID="0239042";
+	private static final String BASE_URL="http://localhost:8081/";
+	private static final String PLAYER_ID="0110905";
 
 	public static void main(String[] args) throws Exception {
         String category = "Echo";
         JSONArray question = readQuestions(category);
         JSONArray answerToQuestions  = calculateAnswer(question);
-        JSONObject answer = new JSONObject();
-        answer.put("playerId", PLAYER_ID);
-        answer.put("answers", answerToQuestions);
+        String answer = String.format("{\"playerId\" : \"%s\",\"answers\":%s}",PLAYER_ID,answerToQuestions.toString());
+
         System.out.println(answer);
         String res = httpPost(FirstTakesAllSolver.BASE_URL + "game", answer.toString());
         System.out.println(res);
     }
 
-    private static JSONArray calculateAnswer(JSONArray question) {
-        return question;
+    private static List<String> calculateAnswer(List<String> questions) {
+        return questions;
+    }
+
+    private static JSONArray calculateAnswer(JSONArray question) throws JSONException {
+        List<String> quelist=new ArrayList<>();
+        for (int i = 0;i<question.length();i++) {
+            quelist.add(question.getString(i));
+        }
+        return new JSONArray(calculateAnswer(quelist));
     }
 
     private static JSONArray readQuestions(String category) throws JSONException, IOException {
