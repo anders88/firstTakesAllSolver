@@ -22,7 +22,7 @@ public class FirstTakesAllSolver {
 
 	public static void main(String[] args) throws Exception {
         String category = "Echo";
-        JSONArray question = readQuestions(category);
+        JSONArray question = new JSONArray(readQuestions(category));
         String answerToQuestions  = calculateAnswer(question);
         String answer = String.format("{\"playerId\" : \"%s\",\"answers\":%s}",PLAYER_ID,answerToQuestions.toString());
 
@@ -36,11 +36,18 @@ public class FirstTakesAllSolver {
     }
 
     private static String calculateAnswer(JSONArray question) throws JSONException {
-        List<String> quelist=new ArrayList<>();
-        for (int i = 0;i<question.length();i++) {
-            quelist.add(question.getString(i));
-        }
+        List<String> quelist = parseQuestions(question.toString());
         return toJson(calculateAnswer(quelist));
+    }
+
+    private static List<String> parseQuestions(String question) throws JSONException {
+        List<String> quelist=new ArrayList<>();
+        String [] parts = question.split(",");
+        for (String part : parts) {
+            String q = part.substring(part.indexOf("\"")+1,part.lastIndexOf("\""));
+            quelist.add(q);
+        }
+        return quelist;
     }
 
     private static String toJson(List<String> quelist) {
@@ -60,14 +67,18 @@ public class FirstTakesAllSolver {
         return result.toString();
     }
 
-    private static JSONArray readQuestions(String category) throws JSONException, IOException {
+    private static String readQuestions(String category) throws JSONException, IOException {
         String questionUrl = FirstTakesAllSolver.BASE_URL +
                 "game?playerid=" + FirstTakesAllSolver.PLAYER_ID +
                 "&category=" +category;
         System.out.println("Reading URL " + questionUrl);
-        JSONArray question = new JSONArray(readUrl(new URL(questionUrl)));
+        String question = fetchQuestions(questionUrl);
         System.out.println(question);
         return question;
+    }
+
+    private static String fetchQuestions(String questionUrl) throws IOException {
+        return readUrl(new URL(questionUrl));
     }
 
     private static String readUrl(URL url) throws IOException {
