@@ -23,7 +23,7 @@ public class FirstTakesAllSolver {
 	public static void main(String[] args) throws Exception {
         String category = "Echo";
         JSONArray question = readQuestions(category);
-        JSONArray answerToQuestions  = calculateAnswer(question);
+        String answerToQuestions  = calculateAnswer(question);
         String answer = String.format("{\"playerId\" : \"%s\",\"answers\":%s}",PLAYER_ID,answerToQuestions.toString());
 
         System.out.println(answer);
@@ -35,12 +35,29 @@ public class FirstTakesAllSolver {
         return questions;
     }
 
-    private static JSONArray calculateAnswer(JSONArray question) throws JSONException {
+    private static String calculateAnswer(JSONArray question) throws JSONException {
         List<String> quelist=new ArrayList<>();
         for (int i = 0;i<question.length();i++) {
             quelist.add(question.getString(i));
         }
-        return new JSONArray(calculateAnswer(quelist));
+        return toJson(calculateAnswer(quelist));
+    }
+
+    private static String toJson(List<String> quelist) {
+        StringBuilder result = new StringBuilder("[");
+        boolean first = true;
+        for (String entry : quelist) {
+            if (!first) {
+                result.append(",");
+            }
+            first = false;
+            result.append("\"");
+            result.append(entry);
+            result.append("\"");
+
+        }
+        result.append("]");
+        return result.toString();
     }
 
     private static JSONArray readQuestions(String category) throws JSONException, IOException {
