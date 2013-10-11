@@ -12,32 +12,33 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 public class FirstTakesAllSolver {
 	private static final String BASE_URL="http://localhost:8081/";
 	private static final String PLAYER_ID="0110905";
 
 	public static void main(String[] args) throws Exception {
-        String category = "Echo";
-        JSONArray question = new JSONArray(readQuestions(category));
-        String answerToQuestions  = calculateAnswer(question);
-        String answer = String.format("{\"playerId\" : \"%s\",\"answers\":%s}",PLAYER_ID,answerToQuestions.toString());
+        String question= readQuestions("Echo");
+        String answerToQuestions  = toJson(calculateAnswer(parseQuestions(question)));
+        String answer = buildJsonAnswer(answerToQuestions);
 
         System.out.println(answer);
         String res = httpPost(FirstTakesAllSolver.BASE_URL + "game", answer.toString());
         System.out.println(res);
     }
 
-    private static List<String> calculateAnswer(List<String> questions) {
-        return questions;
+    private static String buildJsonAnswer(String answerToQuestions) {
+        return String.format("{\"playerId\" : \"%s\",\"answers\":%s}",PLAYER_ID,answerToQuestions);
     }
 
-    private static String calculateAnswer(JSONArray question) throws JSONException {
-        List<String> quelist = parseQuestions(question.toString());
-        return toJson(calculateAnswer(quelist));
+
+    private static List<String> calculateAnswer(List<String> questions) {
+        List<String> answers = new ArrayList<>();
+        for (String q : questions) {
+            answers.add(q);
+        }
+        return answers;
     }
 
     private static List<String> parseQuestions(String question) throws JSONException {
