@@ -15,8 +15,8 @@ import java.util.List;
 import org.json.JSONException;
 
 public class FirstTakesAllSolver {
-	private static final String BASE_URL="http://localhost:8081/";
-	private static final String PLAYER_ID="0110905";
+	private static final String BASE_URL="http://codingquest.herokuapp.com/";
+	private static final String PLAYER_ID="0558350";
 
 	public static void main(String[] args) throws Exception {
         String question= readQuestions("Echo");
@@ -36,9 +36,13 @@ public class FirstTakesAllSolver {
     private static List<String> calculateAnswer(List<String> questions) {
         List<String> answers = new ArrayList<>();
         for (String q : questions) {
-            answers.add(q);
+            answers.add(calculateAnswer(q));
         }
         return answers;
+    }
+
+    private static String calculateAnswer(String q) {
+        return "";
     }
 
     private static List<String> parseQuestions(String question) throws JSONException {
