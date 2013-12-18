@@ -9,39 +9,84 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+
+class Solver {
+
+    public List<String> calculateAnswer(List<String> questions) {
+        List<String> answers = new ArrayList<>();
+        for (String q : questions) {
+            answers.add(echo(q));
+        }
+        return answers;
+    }
+
+    public static String echo(String q) {
+        return "";
+    }
+}
 
 public class FirstTakesAllSolver {
-	private static final String BASE_URL="http://www.anderssandbox.com:8080/fta/";
-	private static final String PLAYER_ID="0239042";
+
+    private static final String BASE_URL="http://codingquest.herokuapp.com/";
+	private static final String PLAYER_ID="1";
 
 	public static void main(String[] args) throws Exception {
-        String category = "Echo";
-        JSONArray question = readQuestions(category);
-        JSONArray answerToQuestions  = calculateAnswer(question);
-        JSONObject answer = new JSONObject();
-        answer.put("playerId", PLAYER_ID);
-        answer.put("answers", answerToQuestions);
+        String question= readQuestions("Echo");
+        String answerToQuestions  = toJson(new Solver().calculateAnswer(parseQuestions(question)));
+        String answer = buildJsonAnswer(answerToQuestions);
+
         System.out.println(answer);
         String res = httpPost(FirstTakesAllSolver.BASE_URL + "game", answer.toString());
         System.out.println(res);
     }
 
-    private static JSONArray calculateAnswer(JSONArray question) {
-        return question;
+    private static String buildJsonAnswer(String answerToQuestions) {
+        return String.format("{\"playerId\" : \"%s\",\"answers\":%s}",PLAYER_ID,answerToQuestions);
     }
 
-    private static JSONArray readQuestions(String category) throws JSONException, IOException {
+    private static List<String> parseQuestions(String question) throws JSONException {
+        List<String> quelist=new ArrayList<>();
+        String [] parts = question.split(",");
+        for (String part : parts) {
+            String q = part.substring(part.indexOf("\"")+1,part.lastIndexOf("\""));
+            quelist.add(q);
+        }
+        return quelist;
+    }
+
+    private static String toJson(List<String> quelist) {
+        StringBuilder result = new StringBuilder("[");
+        boolean first = true;
+        for (String entry : quelist) {
+            if (!first) {
+                result.append(",");
+            }
+            first = false;
+            result.append("\"");
+            result.append(entry);
+            result.append("\"");
+
+        }
+        result.append("]");
+        return result.toString();
+    }
+
+    private static String readQuestions(String category) throws JSONException, IOException {
         String questionUrl = FirstTakesAllSolver.BASE_URL +
                 "game?playerid=" + FirstTakesAllSolver.PLAYER_ID +
                 "&category=" +category;
         System.out.println("Reading URL " + questionUrl);
-        JSONArray question = new JSONArray(readUrl(new URL(questionUrl)));
+        String question = fetchQuestions(questionUrl);
         System.out.println(question);
         return question;
+    }
+
+    private static String fetchQuestions(String questionUrl) throws IOException {
+        return readUrl(new URL(questionUrl));
     }
 
     private static String readUrl(URL url) throws IOException {
