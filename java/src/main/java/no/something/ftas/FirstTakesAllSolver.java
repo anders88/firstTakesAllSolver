@@ -14,13 +14,29 @@ import java.util.List;
 
 import org.json.JSONException;
 
+class Solver {
+
+    public List<String> calculateAnswer(List<String> questions) {
+        List<String> answers = new ArrayList<>();
+        for (String q : questions) {
+            answers.add(echo(q));
+        }
+        return answers;
+    }
+
+    public static String echo(String q) {
+        return "";
+    }
+}
+
 public class FirstTakesAllSolver {
-	private static final String BASE_URL="http://codingquest.herokuapp.com/";
-	private static final String PLAYER_ID="0558350";
+
+    private static final String BASE_URL="http://codingquest.herokuapp.com/";
+	private static final String PLAYER_ID="1";
 
 	public static void main(String[] args) throws Exception {
         String question= readQuestions("Echo");
-        String answerToQuestions  = toJson(calculateAnswer(parseQuestions(question)));
+        String answerToQuestions  = toJson(new Solver().calculateAnswer(parseQuestions(question)));
         String answer = buildJsonAnswer(answerToQuestions);
 
         System.out.println(answer);
@@ -30,19 +46,6 @@ public class FirstTakesAllSolver {
 
     private static String buildJsonAnswer(String answerToQuestions) {
         return String.format("{\"playerId\" : \"%s\",\"answers\":%s}",PLAYER_ID,answerToQuestions);
-    }
-
-
-    private static List<String> calculateAnswer(List<String> questions) {
-        List<String> answers = new ArrayList<>();
-        for (String q : questions) {
-            answers.add(calculateAnswer(q));
-        }
-        return answers;
-    }
-
-    private static String calculateAnswer(String q) {
-        return "";
     }
 
     private static List<String> parseQuestions(String question) throws JSONException {
