@@ -12,7 +12,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
 
 class Solver {
 
@@ -48,7 +47,7 @@ public class FirstTakesAllSolver {
         return String.format("{\"playerId\" : \"%s\",\"answers\":%s}",PLAYER_ID,answerToQuestions);
     }
 
-    private static List<String> parseQuestions(String question) throws JSONException {
+    private static List<String> parseQuestions(String question)  {
         List<String> quelist=new ArrayList<>();
         String [] parts = question.split(",");
         for (String part : parts) {
@@ -75,7 +74,7 @@ public class FirstTakesAllSolver {
         return result.toString();
     }
 
-    private static String readQuestions(String category) throws JSONException, IOException {
+    private static String readQuestions(String category) throws IOException {
         String questionUrl = FirstTakesAllSolver.BASE_URL +
                 "game?playerid=" + FirstTakesAllSolver.PLAYER_ID +
                 "&category=" +category;
