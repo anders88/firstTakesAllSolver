@@ -1,6 +1,6 @@
 # FirstTakesAll Solver
 
-Starting points in various languages for participant in the First Takes All game
+Starting points in various languages for participants in the First Takes All game
 
 ## License
 
