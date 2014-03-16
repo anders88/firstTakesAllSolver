@@ -1,6 +1,6 @@
 <?php
 define('PLAYER_ID', '1234567');
-define(URL, 'http://localhost:8081');
+define('URL', 'http://localhost:8081');
 
 function getQuestions( $category ) {
 	$query = http_build_query(array(
