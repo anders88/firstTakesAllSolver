@@ -1,10 +1,12 @@
+# encoding: utf-8
+
 # remember to run `bundle`
 
 require './ftas'
 
-ftas = FirstTakesAllSolver.new(2428597)
+ftas = FirstTakesAllSolver.new('2428597')
 
-questions = ftas.get_questions_from_category("Echo")
+questions = ftas.get_questions_from_category('Echo')
 
 # do work
 answers = questions
