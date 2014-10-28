@@ -1,9 +1,12 @@
+# encoding: utf-8
+
 require 'http'
 require 'json'
 require 'pp'
 
+# Dialog handler for FirstTakesAll.
 class FirstTakesAllSolver
-  URL = "http://www.anderssandbox.com:8080/fta/game"
+  URL = 'http://www.anderssandbox.com:8080/fta/game'
 
   attr_reader :player_id
 
@@ -12,10 +15,12 @@ class FirstTakesAllSolver
   end
 
   def get_questions_from_category(category)
-    pp JSON.load(HTTP.get(URL, :params => { :playerid => player_id, :category => category }))
+    pp JSON.load(HTTP.get(URL, params: { playerid: player_id,
+                                         category: category }))
   end
 
   def send_answers(answers)
-    pp JSON.load(HTTP.post(URL, :body => JSON.dump({ :playerId => player_id, :answers => answers })))
+    pp JSON.load(HTTP.post(URL, body: JSON.dump(playerId: player_id,
+                                                answers: answers)))
   end
 end
