@@ -1,8 +1,8 @@
-var http = require("http");
+var https = require("https");
 
-var PLAYER_ID = "0150835"; // Your given player id
-var HOSTNAME = "localhost"; // FTA-Server address
-var PORT = 8081; // FTA-server-port
+var PLAYER_ID = "0150106"; // Your given player id
+var HOSTNAME = "codingquest.herokuapp.com"; // FTA-Server address
+var PORT = 443; // FTA-server-port
 
 
 function getQuestions(category, callback) {
@@ -14,7 +14,7 @@ function getQuestions(category, callback) {
 	};
 
 
-	var req = http.request(getoptions, function(res) {
+	var req = https.request(getoptions, function(res) {
 	  console.log('STATUS: ' + res.statusCode);
 	  console.log('HEADERS: ' + JSON.stringify(res.headers));
 	  res.setEncoding('utf8');
@@ -47,7 +47,7 @@ function answerQuestions(answers) {
 	};
 
 
-	var req = http.request(postoptions, function(res) {
+	var req = https.request(postoptions, function(res) {
 	  console.log('STATUS: ' + res.statusCode);
 	  console.log('HEADERS: ' + JSON.stringify(res.headers));
 	  res.setEncoding('utf8');

@@ -2,7 +2,7 @@ import json
 from urllib import urlencode, urlopen
 
 # Insert your specific values
-SERVER = "http://localhost:8081"
+SERVER = "https://codingquest.herokuapp.com"
 PLAYER_ID = "1234567"
 
 
